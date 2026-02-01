@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         YouTube Fluff Buster
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
-// @description  Removes YouTube Playables section, Shorts button from mini guide, and Shorts from sidebar
+// @version      1.0.1
+// @description  Removes YouTube Playables, Shorts shelf from feed, Shorts button from mini guide and sidebar
 // @author       You
 // @match        https://www.youtube.com/*
 // @icon         https://www.youtube.com/favicon.ico
@@ -54,11 +54,23 @@
         });
     }
 
+    // Remove Shorts shelf from homepage feed
+    function removeShortsShelf() {
+        document.querySelectorAll('ytd-rich-shelf-renderer').forEach(shelf => {
+            const titleElement = shelf.querySelector('#title');
+            const title = titleElement?.textContent?.trim().toLowerCase();
+            if (title === 'shorts') {
+                shelf.closest('ytd-rich-section-renderer')?.remove();
+            }
+        });
+    }
+
     // Run all cleanup functions
     function runCleanup() {
         removePlayables();
         removeMiniGuideShorts();
         removeSidebarShorts();
+        removeShortsShelf();
     }
 
     // Initial cleanup
